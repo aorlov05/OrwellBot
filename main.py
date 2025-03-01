@@ -1,5 +1,9 @@
+import os
 import discord
 from discord.ext import commands
+from dotenv import load_dotenv
+load_dotenv()
+DISCORD_API_KEY = os.environ.get('DISCORD_API_KEY')
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="-", intents=intents)
@@ -12,4 +16,4 @@ async def on_ready():
 async def ping(ctx):
     await ctx.send("pong")
 
-bot.run("X")
+bot.run(DISCORD_API_KEY)
