@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from google import genai
 
-client = genai.Client(api_key="AIzaSyCcRitudApXCvU63ocM5aV-iViBuxmigik")
+client = genai.Client(api_key="")
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="-", intents=intents)
 
