@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
+from datetime import timedelta
 
 class Moderation(commands.Cog):
     def __init__(self,bot) -> None:
@@ -103,21 +104,25 @@ class Moderation(commands.Cog):
                 await ctx.send(embed=embed)
 
     @commands.command()
-    @commands.has_permissions(timeout_members=True)
-    @commands.bot_has_permissions(timeout_members=True)
+    @commands.has_permissions(moderate_members=True)
+    @commands.bot_has_permissions(moderate_members=True)
     @app_commands.describe(user="The user to timeout.", reason="The reason for timeout.")
-    async def timeout(self, ctx, user: discord.User, reason: str = "No Reason Given") -> None:
+    async def timeout(self, ctx, user: discord.User, days: int, hours: int, minutes: int, reason: str = "No Reason Given") -> None:
         """
         timeout a user from the server
 
         Parameters:
         ctx: the command context
         user: the user to timeout from the server
+        days: days to timeout
+        hours: hours to timeout
+        minutes: minutes to timeout
         reason: the reason to timeout the user, defaults to "No Reason Given"
 
         Returns:
         None
         """
+        time: timedelta = timedelta(days=days, hours=hours, minutes=minutes)
         member = ctx.guild.get_member(user.id)
         # Check if the user is an admin
         if member.guild_permissions.administrator:
@@ -128,9 +133,9 @@ class Moderation(commands.Cog):
         else:
             # Try timing out user
             try:
-                await ctx.guild.timeout(user, reason=reason)
+                await member.timeout(time, reason=reason)
                 embed = discord.Embed(
-                    description=f"**{member}** was timed out by **{ctx.author}**!",
+                    description=f"**{member}** was timed out by **{ctx.author}** for **{days}** days, **{hours}** hours, and **{minutes}** minutes.\nReason: {reason}!",
                     color=0x00FF00
                 )
                 embed.add_field(name="Reason:", value=reason)
