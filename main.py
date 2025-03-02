@@ -46,12 +46,15 @@ async def on_message(ctx):
         print(ctx)
         print(f"{ctx.author} said: {ctx.content}")
 
-        if ctx.content.startswith("-init"):
-            server_data.init_server_ruleset(mongo_client, ctx.guild.id)
-
         repeated_message = check_repeat_message(mongo_client, ctx.author.id, ctx.content)
         if repeated_message:
             print(str(ctx.author) + " said " + ctx.content + " multiple times!")
+            try:
+                await ctx.author.send(f"Please don't spam! Content: {ctx.content}")
+            except:
+                pass
+            finally:
+                await ctx.delete()
         set_last_message(mongo_client, ctx.author.id, ctx.content)
 
         await bot.process_commands(ctx)
