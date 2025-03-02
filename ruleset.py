@@ -32,7 +32,10 @@ async def ruleset(ctx, arg: str, *, string: str = ""):
             response = client.models.generate_content(
             model="gemini-2.0-flash-lite",
             contents=prompt + "In under 2000 characters, what are the rules outlined?")
-            await ctx.send(response.text[:2000])
+            embed = discord.Embed(
+                description=response.text[:2000], color=0x3D8EFF
+            )
+            await ctx.send(embed=embed)
         case "replace":
             response = client.models.generate_content(
             model="gemini-2.0-flash-lite",
@@ -46,9 +49,15 @@ async def ruleset(ctx, arg: str, *, string: str = ""):
             contents="You are updating a Discord server's ruleset. You will receive a list of rules, and your task is to extract and format them into clear, specific rules and punishments. Your response will be directly added to a text file, so format it exactly as required without any extra text or explanations.\nDo not add any rules that are not explicitly stated.\nDo not include acknowledgments like 'Okay, I understand.'\nOnly output the rules and punishments in a concise, structured format.\nExample Format:\nBan users who say cheese.\nKick users who are being homophobic.\nNow, process the following ruleset and return only the formatted rules and punishments" + string)
             add_server_ruleset(mongo_client, ctx.guild.id, response.text)
         case "help":
-            await ctx.send("-ruleset (view, add, replace, clear, help)")
+            embed=discord.Embed(
+                description="Available subcommands: view, add, replace, clear, or help",color=0x3D8EFF
+            )
+            await ctx.send(embed=embed)
         case _:
-            await ctx.send("Invalid Usage, try -ruleset (view, add, replace, clear)")
+            embed=discord.Embed(
+                description="Invalid usage. Please provide one of the following options: view, add, replace, clear, or help. Usage example: -ruleset view",color=0xFF0000
+            )
+            await ctx.send(embed=embed)
 
 
 
