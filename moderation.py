@@ -159,11 +159,9 @@ class Moderation(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     @commands.bot_has_permissions(manage_messages=True)
     @app_commands.describe(messageID="The message ID to delete", reason="The reason for delete.")
-    async def delete_message(self, ctx, message_id: int, *, reason: str):
-        print(message_id)
+    async def delete_message(self, ctx, message_id: int, *, reason: str = "No Reason Given"):
         try:
             message = await ctx.fetch_message(message_id)
-            print(message)
             await message.delete()
             embed = discord.Embed(
                 description=f"**{message.author}**'s message **{message_id}** deleted from **{ctx.guild.name}** by **{ctx.author}**!\nReason: {reason}", color=0x00FF00

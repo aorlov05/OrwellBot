@@ -64,9 +64,11 @@ async def judge(ctx, *, string: str = ""):
     None
     """
     prompt = open("prompt.txt", 'r').read() + "\nCONTEXT DONE!"
-    punishment = genai_client.models.generate_content(model="gemini-2.0-flash-lite", contents=prompt+"User, "+str(ctx.author)+" says:"+string+"Respond only with 'none', 'kick', 'ban', or 'timeout', followed by a colon ':' and a brief reason for the punishment in under 100 characters.")
+    punishment = genai_client.models.generate_content(model="gemini-2.0-flash-lite", contents=prompt+"User, "+str(ctx.author)+" says:"+string+"Respond only with 'none', 'kick', 'ban', or 'timeout', followed by a colon ':' and a brief reason for the decision in under 100 characters.")
     reason = punishment.text.split(':')
-    await punish(ctx, reason[0], ctx.author, reason[1])
+    if reason[0].lower() != 'none':
+        await modActions.delete_message(ctx, ctx.message.id, reason=reason[1])
+        await punish(ctx, reason[0], ctx.author, reason[1])
 
 
 async def punish(ctx, message: str, user: discord.User, reason: str):
