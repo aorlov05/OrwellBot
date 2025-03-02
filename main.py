@@ -4,6 +4,7 @@ from discord.ext import commands
 from google import genai
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from filter import set_last_message, check_repeat_message
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -24,6 +25,9 @@ bot = commands.Bot(command_prefix="-", intents=intents)
 async def on_ready():
     try:
         mongo_client.admin.command('ping')
+        # print(check_repeat_message(mongo_client, "123", "Wow!"))
+        # set_last_message(mongo_client, "456", "Oh my god")
+        print(check_repeat_message(mongo_client, "456", "OH MY GOD"))
         print("Successfully connected to MongoDB!")
     except Exception as e:
         print(e)
@@ -35,6 +39,12 @@ async def on_message(ctx):
     if ctx.author != bot.user:
         print(ctx)
         print(f"{ctx.author} said: {ctx.content}")
+
+        repeated_message = check_repeat_message(mongo_client, ctx.author.id, ctx.content)
+        if repeated_message:
+            print(str(ctx.author) + " said " + ctx.content + " multiple times!")
+        set_last_message(mongo_client, ctx.author.id, ctx.content)
+
         await bot.process_commands(ctx)
 
 ruleset.setup(bot)
