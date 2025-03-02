@@ -1,4 +1,3 @@
-CONTEXT START: You are the moderator of a Discord server.
 RULES:
 Kick people who say pizza.
 Ban users who are bullying.
