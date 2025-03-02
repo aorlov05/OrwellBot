@@ -30,16 +30,6 @@ config = types.GenerateContentConfig(tools=[modActions.timeout, modActions.kick,
 
 @bot.event
 async def on_ready():
-    # try:
-    #     mongo_client.admin.command('ping')
-    #     # print(check_repeat_message(mongo_client, "123", "Wow!"))
-    #     # set_last_message(mongo_client, "456", "Oh my god")
-    #     print(check_repeat_message(mongo_client, "456", "OH MY GOD"))
-    #     print("Successfully connected to MongoDB!")
-    #
-    #     # init_server_ruleset(mongo_client, guild)
-    # except Exception as e:
-    #     print(e)
     await bot.add_cog(modActions)
     print("online")
 
@@ -78,7 +68,6 @@ async def judge(ctx, *, string: str = ""):
     Returns:
     None
     """
-    # prompt = open("prompt.txt", 'r').read() + "\nCONTEXT DONE!"
     prompt = server_data.get_server_ruleset(mongo_client, ctx.guild.id)
     punishment = genai_client.models.generate_content(model="gemini-2.0-flash-lite", contents=prompt+"User, "+str(ctx.author)+" says:"+string+"Respond only with 'none', 'kick', 'ban', or 'timeout', followed by a colon ':' and a brief reason for the punishment in under 100 characters.")
     reason = punishment.text.split(':')
@@ -105,7 +94,6 @@ async def punish(ctx, message: str, user: discord.User, reason: str):
     elif message.lower() == 'ban':
         await modActions.ban(ctx, user, reason=reason)
     elif message.lower() == 'timeout':
-        # prompt = open("prompt.txt", 'r').read() + "\nCONTEXT DONE!"
         prompt = server_data.get_server_ruleset(mongo_client, ctx.guild.id)
         time = genai_client.models.generate_content(model="gemini-2.0-flash-lite", contents = prompt+"User, "+str(ctx.author)+" says:"+str(ctx.message)+"Respond only with a time formatted as 'Days:Hours:Minutes' (for example '0:2:30') based on how long you think the user should be timed out for this offense.")
         times = time.text.split(':')

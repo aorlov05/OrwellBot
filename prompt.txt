@@ -1,2 +1,1 @@
-CONTEXT START: You are the moderator of a Discord server.
 RULES:
