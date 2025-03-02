@@ -9,11 +9,12 @@ def init_server_ruleset(mongo_client, server_id):
 
 
 def set_server_ruleset(mongo_client, server_id, ruleset):
+    print(ruleset)
     db = mongo_client["filter"]
     server_data = db["server_data"]
     server = server_data.find_one({"server_id": str(server_id)})
     if server:
-        server.update_one(
+        server_data.update_one(
             {"server_id": str(server_id)},
             {"$set": {"ruleset": ruleset}},
             upsert=True
