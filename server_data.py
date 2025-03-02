@@ -1,4 +1,14 @@
 def init_server_ruleset(mongo_client, server_id):
+    """
+    Initializes a new server's database with the default ruleset.
+
+    Parameters:
+    mongo_client: the MongoClient object used to interact with the database
+    server_id: the unique id for each Discord server
+
+    Returns:
+    None
+    """
     print("Init server ruleset: " + str(server_id))
     db = mongo_client["filter"]
     server_data = db["server_data"]
@@ -9,6 +19,17 @@ def init_server_ruleset(mongo_client, server_id):
 
 
 def set_server_ruleset(mongo_client, server_id, ruleset):
+    """
+    Sets the ruleset for a Discord server.
+
+    Parameters:
+    mongo_client: the MongoClient object used to interact with the database
+    server_id: the unique id for each Discord server
+    ruleset: the provided ruleset string
+
+    Returns:
+    None
+    """
     print(ruleset)
     db = mongo_client["filter"]
     server_data = db["server_data"]
@@ -22,6 +43,16 @@ def set_server_ruleset(mongo_client, server_id, ruleset):
         print("Done")
 
 def get_server_ruleset(mongo_client, server_id):
+    """
+    Gets the ruleset for a Discord server.
+
+    Parameters:
+    mongo_client: the MongoClient object used to interact with the database
+    server_id: the unique id for each Discord server
+
+    Returns:
+    The requested server's ruleset
+    """
     db = mongo_client["filter"]
     server_data = db["server_data"]
     server = server_data.find_one({"server_id": str(server_id)})
@@ -30,6 +61,17 @@ def get_server_ruleset(mongo_client, server_id):
     return server.get("ruleset")
 
 def add_server_ruleset(mongo_client, server_id, ruleset):
+    """
+    Adds to the end of a server's ruleset
+
+    Parameters:
+    mongo_client: the MongoClient object used to interact with the database
+    server_id: the unique id for each Discord server
+    ruleset: the provided ruleset string
+
+    Returns:
+    None
+    """
     db = mongo_client["filter"]
     server_data = db["server_data"]
     server = server_data.find_one({"server_id": str(server_id)})
