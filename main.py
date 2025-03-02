@@ -37,7 +37,7 @@ async def on_ready():
         print(check_repeat_message(mongo_client, "456", "OH MY GOD"))
         print("Successfully connected to MongoDB!")
 
-        init_server_ruleset(mongo_client, guild)
+        # init_server_ruleset(mongo_client, guild)
     except Exception as e:
         print(e)
     await bot.add_cog(Moderation(bot))
