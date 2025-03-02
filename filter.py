@@ -63,7 +63,7 @@ def check_profanity(mongo_client, message):
     return detected_profanity
 
 
-def set_last_message(mongo_client, user_id, message):
+def set_last_message(mongo_client, user_id, server_id, message):
     """
     Sets the last message that a user sent to the database
     Should be run every time a user sends a message,
@@ -76,13 +76,13 @@ def set_last_message(mongo_client, user_id, message):
     db = mongo_client["filter"]
     last_message = db["last_message"]
     last_message.update_one(
-        {"user_id": user_id},
+        {"user_id": user_id, "server_id": server_id},
         {"$set": {"previous_message": message}},
         upsert=True  # If the user isn't in the database, create a new collection
     )
 
 
-def check_repeat_message(mongo_client, user_id, message):
+def check_repeat_message(mongo_client, user_id, server_id, message):
     """
     Returns if a message is the same as the user's last message
     :param mongo_client: A PyMongo MongoClient object to access the database
@@ -92,11 +92,11 @@ def check_repeat_message(mongo_client, user_id, message):
     """
     db = mongo_client["filter"]
     last_messages = db["last_message"]
-    user_id = last_messages.find_one({"user_id": user_id})
+    find_user = last_messages.find_one({"user_id": user_id, "server_id": server_id})
     # First message ever sent, then they couldn't have repeated themselves
-    if not user_id:
+    if not find_user:
         return False
 
-    last_message = user_id.get("previous_message")
+    last_message = find_user.get("previous_message")
     return last_message.lower() == message.lower()
 
