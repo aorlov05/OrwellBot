@@ -11,7 +11,7 @@ class Moderation(commands.Cog):
     @commands.has_permissions(kick_members=True)
     @commands.bot_has_permissions(kick_members=True)
     @app_commands.describe(user="The user to kick.", reason="The reason for kicking.")
-    async def kick(self, ctx, user: discord.User, reason: str = "No Reason Given") -> None:
+    async def kick(self, ctx, user: discord.User, *, reason: str = "No Reason Given") -> None:
         """
         Kick a user from the server
 
@@ -59,7 +59,7 @@ class Moderation(commands.Cog):
     @commands.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     @app_commands.describe(user="The user to ban.", reason="The reason for banning.")
-    async def ban(self, ctx, user: discord.User, reason: str = "No Reason Given") -> None:
+    async def ban(self, ctx, user: discord.User, *, reason: str = "No Reason Given") -> None:
         """
         Ban a user from the server
 
@@ -107,7 +107,7 @@ class Moderation(commands.Cog):
     @commands.has_permissions(moderate_members=True)
     @commands.bot_has_permissions(moderate_members=True)
     @app_commands.describe(user="The user to timeout.", reason="The reason for timeout.")
-    async def timeout(self, ctx, user: discord.User, days: int, hours: int, minutes: int, reason: str = "No Reason Given") -> None:
+    async def timeout(self, ctx, user: discord.User, days: int, hours: int, minutes: int, *, reason: str = "No Reason Given") -> None:
         """
         timeout a user from the server
 
