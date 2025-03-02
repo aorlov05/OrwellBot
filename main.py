@@ -30,16 +30,6 @@ config = types.GenerateContentConfig(tools=[modActions.timeout, modActions.kick,
 
 @bot.event
 async def on_ready():
-    try:
-        mongo_client.admin.command('ping')
-        # print(check_repeat_message(mongo_client, "123", "Wow!"))
-        # set_last_message(mongo_client, "456", "Oh my god")
-        print(check_repeat_message(mongo_client, "456", "OH MY GOD"))
-        print("Successfully connected to MongoDB!")
-
-        init_server_ruleset(mongo_client, guild)
-    except Exception as e:
-        print(e)
     await bot.add_cog(Moderation(bot))
     print("online")
 
