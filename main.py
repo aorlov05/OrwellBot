@@ -30,17 +30,17 @@ config = types.GenerateContentConfig(tools=[modActions.timeout, modActions.kick,
 
 @bot.event
 async def on_ready():
-    try:
-        mongo_client.admin.command('ping')
-        # print(check_repeat_message(mongo_client, "123", "Wow!"))
-        # set_last_message(mongo_client, "456", "Oh my god")
-        print(check_repeat_message(mongo_client, "456", "OH MY GOD"))
-        print("Successfully connected to MongoDB!")
-
-        # init_server_ruleset(mongo_client, guild)
-    except Exception as e:
-        print(e)
-    await bot.add_cog(Moderation(bot))
+    # try:
+    #     mongo_client.admin.command('ping')
+    #     # print(check_repeat_message(mongo_client, "123", "Wow!"))
+    #     # set_last_message(mongo_client, "456", "Oh my god")
+    #     print(check_repeat_message(mongo_client, "456", "OH MY GOD"))
+    #     print("Successfully connected to MongoDB!")
+    #
+    #     # init_server_ruleset(mongo_client, guild)
+    # except Exception as e:
+    #     print(e)
+    await bot.add_cog(modActions)
     print("online")
 
 
@@ -82,7 +82,9 @@ async def judge(ctx, *, string: str = ""):
     prompt = server_data.get_server_ruleset(mongo_client, ctx.guild.id)
     punishment = genai_client.models.generate_content(model="gemini-2.0-flash-lite", contents=prompt+"User, "+str(ctx.author)+" says:"+string+"Respond only with 'none', 'kick', 'ban', or 'timeout', followed by a colon ':' and a brief reason for the punishment in under 100 characters.")
     reason = punishment.text.split(':')
-    await punish(ctx, reason[0], ctx.author, reason[1])
+    if reason[0].lower() != "none":
+        await modActions.delete_message(ctx, ctx.message.id, reason=reason[1])
+        await punish(ctx, reason[0], ctx.author, reason[1])
 
 
 async def punish(ctx, message: str, user: discord.User, reason: str):
