@@ -67,7 +67,7 @@ async def on_message(ctx):
 
         await bot.process_commands(ctx)
 
-@bot.command()
+#@bot.command()
 async def judge(ctx, *, string: str = ""):
     """
     Uses Gemini to judge a user's message against the server's ruleset
