@@ -19,11 +19,11 @@ async def on_ready():
     print("online")
 
 @bot.event
-async def on_message(message):
-    if message.author != bot.user:
-        print(message)
-        print(f"{message.author} said: {message.content}")
-        await bot.process_commands(message)
+async def on_message(ctx):
+    if ctx.author != bot.user:
+        print(ctx)
+        print(f"{ctx.author} said: {ctx.content}")
+        await bot.process_commands(ctx)
 
 ruleset.setup(bot)
 bot.run(DISCORD_API_KEY)
