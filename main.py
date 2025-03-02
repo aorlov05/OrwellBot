@@ -68,14 +68,35 @@ async def on_message(ctx):
 
 @bot.command()
 async def judge(ctx, *, string: str = ""):
+    """
+    Uses Gemini to judge a user's message against the server's ruleset
+
+    Parameters:
+    ctx: the command context
+    string: the message to judge
+
+    Returns:
+    None
+    """
     # prompt = open("prompt.txt", 'r').read() + "\nCONTEXT DONE!"
     prompt = server_data.get_server_ruleset(mongo_client, ctx.guild.id)
-    punishment = genai_client.models.generate_content(model="gemini-2.0-flash-lite", contents=prompt+"User, "+str(ctx.author)+" says:"+string+"Respond only with 'kick', 'ban', or 'timeout', followed by a colon ':' and a brief reason for the punishment in under 100 characters.")
+    punishment = genai_client.models.generate_content(model="gemini-2.0-flash-lite", contents=prompt+"User, "+str(ctx.author)+" says:"+string+"Respond only with 'none', 'kick', 'ban', or 'timeout', followed by a colon ':' and a brief reason for the punishment in under 100 characters.")
     reason = punishment.text.split(':')
     await punish(ctx, reason[0], ctx.author, reason[1])
 
 
 async def punish(ctx, message: str, user: discord.User, reason: str):
+    """
+    Punishes the user based off of Gemini's judgement
+
+    Parameters:
+    message: the message to be judged if timeout is the punishment
+    user: the user to punish
+    reason: the reason for the punishment provided by Gemini
+
+    Returns:
+    None
+    """
     ctx.author = "Orwell"
     if message.lower() == 'kick':
         await modActions.kick(ctx, user, reason=reason)
@@ -91,6 +112,8 @@ async def punish(ctx, message: str, user: discord.User, reason: str):
             await modActions.timeout(ctx, user, int(times[0]), int(times[1]), int(times[2]), reason=reason)
         except Exception as e:
             print("Error timing user out: " + e)
+    elif message.lower() == 'none':
+        return
 
 ruleset.setup(bot)
 bot.run(DISCORD_API_KEY)
