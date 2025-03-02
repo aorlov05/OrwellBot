@@ -7,7 +7,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
 import server_data
-from filter import set_last_message, check_repeat_message
+from filter import set_last_message, check_repeat_message, check_profanity, call_smalltalk_is_http
 from server_data import init_server_ruleset
 
 from dotenv import load_dotenv
@@ -56,6 +56,14 @@ async def on_message(ctx):
             finally:
                 await ctx.delete()
         set_last_message(mongo_client, ctx.author.id, ctx.content)
+
+        if check_profanity(mongo_client, ctx.content):
+            await ctx.author.send(f"Please don't swear! Content: {ctx.content}")
+            await ctx.delete()
+
+        if call_smalltalk_is_http(ctx.content):
+            await ctx.author.send(f"Don't send links in chat. Content: {ctx.content}")
+            await ctx.delete()
 
         await bot.process_commands(ctx)
 

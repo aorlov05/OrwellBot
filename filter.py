@@ -15,7 +15,7 @@ def call_smalltalk_is_http(message):
     This also returns silently returns False if GNU Smalltalk is not installed on the OS.
     """
     # Open the Smalltalk file to read the existing content
-    with open("hello.st", "r") as file:
+    with open("message_detector.st", "r") as file:
         file_content = file.read()
     # Add small talk code to initialize MessageDetector object and call 'isHttp'
     modified_content = file_content.rstrip() + f"\n| message_detector |\nmessage_detector := MessageDetector new: '{message}'.\nmessage_detector isHttp.\n"
