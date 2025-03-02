@@ -21,7 +21,6 @@ def set_server_ruleset(mongo_client, server_id, ruleset):
         )
         print("Done")
 
-
 def get_server_ruleset(mongo_client, server_id):
     db = mongo_client["filter"]
     server_data = db["server_data"]
@@ -29,3 +28,16 @@ def get_server_ruleset(mongo_client, server_id):
     if not server:
         return False
     return server.get("ruleset")
+
+def add_server_ruleset(mongo_client, server_id, ruleset):
+    db = mongo_client["filter"]
+    server_data = db["server_data"]
+    server = server_data.find_one({"server_id": str(server_id)})
+    newruleset=server.get("ruleset")+ruleset
+    if server:
+        server_data.update_one(
+            {"server_id": str(server_id)},
+            {"$set": {"ruleset": newruleset}},
+            upsert=True
+        )
+        print("Done")
