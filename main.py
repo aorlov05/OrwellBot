@@ -46,7 +46,15 @@ async def on_message(ctx):
         print(ctx)
         print(f"{ctx.author} said: {ctx.content}")
 
-        repeated_message = check_repeat_message(mongo_client, ctx.author.id, ctx.content)
+        if check_profanity(mongo_client, ctx.content):
+            await ctx.author.send(f"Please don't swear! Content: {ctx.content}")
+            await ctx.delete()
+
+        if call_smalltalk_is_http(ctx.content):
+            await ctx.author.send(f"Don't send links in chat. Content: {ctx.content}")
+            await ctx.delete()
+
+        repeated_message = check_repeat_message(mongo_client, ctx.author.id, ctx.guild.id, ctx.content)
         if repeated_message:
             print(str(ctx.author) + " said " + ctx.content + " multiple times!")
             try:
@@ -55,15 +63,7 @@ async def on_message(ctx):
                 pass
             finally:
                 await ctx.delete()
-        set_last_message(mongo_client, ctx.author.id, ctx.content)
-
-        if check_profanity(mongo_client, ctx.content):
-            await ctx.author.send(f"Please don't swear! Content: {ctx.content}")
-            await ctx.delete()
-
-        if call_smalltalk_is_http(ctx.content):
-            await ctx.author.send(f"Don't send links in chat. Content: {ctx.content}")
-            await ctx.delete()
+        set_last_message(mongo_client, ctx.author.id, ctx.guild.id, ctx.content)
 
         await bot.process_commands(ctx)
 
