@@ -5,6 +5,7 @@ from google import genai
 from google.genai import types
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from filter import set_last_message, check_repeat_message
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -26,12 +27,15 @@ config = types.GenerateContentConfig(tools=[modActions.timeout, modActions.kick,
 
 @bot.event
 async def on_ready():
-    # try:
-    #     mongo_client.admin.command('ping')
-    #     print("Successfully connected to MongoDB!")
-    # except Exception as e:
-    #     print(e)
-    await bot.add_cog(modActions)
+    try:
+        mongo_client.admin.command('ping')
+        # print(check_repeat_message(mongo_client, "123", "Wow!"))
+        # set_last_message(mongo_client, "456", "Oh my god")
+        print(check_repeat_message(mongo_client, "456", "OH MY GOD"))
+        print("Successfully connected to MongoDB!")
+    except Exception as e:
+        print(e)
+    await bot.add_cog(Moderation(bot))
     print("online")
 
 @bot.event
@@ -39,6 +43,12 @@ async def on_message(ctx):
     if ctx.author != bot.user:
         print(ctx)
         print(f"{ctx.author} said: {ctx.content}")
+
+        repeated_message = check_repeat_message(mongo_client, ctx.author.id, ctx.content)
+        if repeated_message:
+            print(str(ctx.author) + " said " + ctx.content + " multiple times!")
+        set_last_message(mongo_client, ctx.author.id, ctx.content)
+
         await bot.process_commands(ctx)
 
 @bot.command()
