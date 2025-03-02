@@ -29,12 +29,6 @@ async def ruleset(ctx, getset: str, *, string: str = ""):
         )
         await ctx.send(response.text[:2000])
 
-@commands.command(name="judge")
-async def judge(ctx, *, string: str = ""):
-    prompt = open("prompt.txt", 'r').read() + "\nCONTEXT DONE!"
-    punishment = client.models.generate_content(model="gemini-2.0-flash-lite", contents=prompt+"User, "+str(ctx.author)+" says:"+string+"Respond only with 'kick', 'ban', or 'timeout'")
-    print(punishment.text)
-
 def setup(bot):
     bot.add_command(ruleset)
-    bot.add_command(judge)
+
